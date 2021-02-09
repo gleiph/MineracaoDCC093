@@ -69,4 +69,31 @@ public class Project {
         }
     }
 
+    public int getNumberPackages(){
+        return this.packages.size();
+    }
+    
+    public int getNumberClasses(){
+        int classes = 0;
+        for (Packagee packgee : packages) {
+            classes += packgee.getNumberClasses();
+        }
+        
+        return classes;
+    }
+    
+    public int getNumberMethods(){
+        
+        int methods = 0;
+        for (Packagee packgee : packages) {
+            for (Clazz clazz : packgee.getClasses()) {
+                methods += clazz.getNumberMethods();
+            }
+        }
+        
+        return methods;
+    }
+    
+    
+    
 }

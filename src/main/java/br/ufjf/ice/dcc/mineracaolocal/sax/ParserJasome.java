@@ -10,12 +10,14 @@ import br.ufjf.ice.dcc.mineracaolocal.jasome.model.Method;
 import br.ufjf.ice.dcc.mineracaolocal.jasome.model.Packagee;
 import br.ufjf.ice.dcc.mineracaolocal.jasome.model.Project;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -29,7 +31,7 @@ public class ParserJasome extends DefaultHandler {
     private Packagee packagee;
     private Clazz clazz;
     private Method method;
-    
+
     private boolean inProject;
     private boolean inPackagee;
     private boolean inClazz;
@@ -51,8 +53,33 @@ public class ParserJasome extends DefaultHandler {
         this.inMethod = false;
 
     }
+    
+    
+    /**
+     * 
+     * @param xml - content of a XML file
+     */
+    public void contentParsing(String xml) {
 
-    public void fazerParsing(String xmlPath) {
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        SAXParser saxParser;
+        
+        try {
+            saxParser = factory.newSAXParser();
+            saxParser.parse(new InputSource(new StringReader(xml)), this);
+
+        } catch (ParserConfigurationException | SAXException | IOException ex) {
+            Logger.getLogger(ParserSAX.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    
+    /**
+     * 
+     * @param xmlPath - path to a XML file
+     */
+    public void pathParsing(String xmlPath) {
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser parser;
@@ -70,12 +97,12 @@ public class ParserJasome extends DefaultHandler {
 
     @Override
     public void startDocument() throws SAXException {
-        super.startDocument(); 
+        super.startDocument();
     }
 
     @Override
     public void endDocument() throws SAXException {
-        super.endDocument(); 
+        super.endDocument();
     }
 
     @Override
@@ -97,11 +124,10 @@ public class ParserJasome extends DefaultHandler {
             this.method = new Method();
             this.method.setName(attributes.getValue("name"));
         } else if (qName.equals(METRIC)) {
-            
+
             String name = attributes.getValue("name");
             String value = attributes.getValue("value");
-      
-            
+
             if (inMethod) {
 
                 if (name.equals("TLOC")) {
@@ -154,7 +180,7 @@ public class ParserJasome extends DefaultHandler {
         } else if (qName.equals(METHOD)) {
             this.inMethod = false;
             this.clazz.getMethods().add(this.method);
-        } 
+        }
 
         super.endElement(uri, localName, qName); //To change body of generated methods, choose Tools | Templates.
     }
@@ -173,11 +199,10 @@ public class ParserJasome extends DefaultHandler {
     public static void main(String[] args) {
         ParserJasome parser = new ParserJasome();
         String xmlPath = "/Users/gleiph/Google Drive/UFJF/2020.3/DCC093/project.xml";
-        parser.fazerParsing(xmlPath);
+        parser.pathParsing(xmlPath);
 
         parser.getProject().print();
 
     }
 
 }
-    
