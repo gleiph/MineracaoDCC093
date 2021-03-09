@@ -7,6 +7,7 @@ package br.ufjf.ice.dcc.mineracaolocal.jasome.cli;
 
 import br.ufjf.ice.dcc.mineracaolocal.cli.CLIExecute;
 import br.ufjf.ice.dcc.mineracaolocal.cli.CLIExecution;
+import br.ufjf.ice.dcc.mineracaolocal.exceptions.NoJavaFilesJasome;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,36 +18,40 @@ import java.util.logging.Logger;
  */
 public class JasomeCLI {
 
-    public static String execute(String jasomePath, String projectPath) throws IOException {
-
+    public static String execute(String jasomePath, String projectPath) throws IOException, NoJavaFilesJasome {
+        boolean error = false;
         StringBuffer result = new StringBuffer();
         String command = jasomePath + " " + projectPath;
 
         CLIExecution execution = CLIExecute.execute(command, ".");
 
-        if(execution.getError() != null && execution.getError().size() > 0)
+        if (execution.getError() != null && execution.getError().size() > 0) {
+            for (String line : execution.getError()) {
+
+                if (!line.startsWith("[main] WARN") && !line.startsWith("Problem stacktrace :")
+                        && !line.startsWith("  ") && line.length() > 0) {
+                    
+                    if(line.startsWith("[main] ERROR") && line.contains("- No .java files found")){
+                        throw  new NoJavaFilesJasome();
+                    }
+                    
+                    
+                    error = true;
+                }
+            }
+
+        }
+
+        if (error) {
             return null;
-        
-        for (String line : execution.getOutput()) {
-            result.append(line).append("\n");
-        }
-
-        return result.toString();
-
-    }
-
-    public static void main(String[] args) {
-        String jasomePath = "/Users/gleiph/repositories/jasome/build/distributions/jasome/bin/jasome";
-        String projectPath = "/Users/gleiph/NetBeansProjects/MineracaoLocal";
-
-        try {
-            String execute = JasomeCLI.execute(jasomePath, projectPath);
-            System.out.println(execute);
-        } catch (IOException ex) {
-            Logger.getLogger(JasomeCLI.class
-                    .getName()).log(Level.SEVERE, null, ex);
+        } else {
+            for (String line : execution.getOutput()) {
+                result.append(line).append("\n");
+            }
+            return result.toString();
         }
 
     }
+
 
 }

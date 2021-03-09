@@ -10,6 +10,7 @@ import br.ufjf.ice.dcc.mineracaolocal.cli.CLIExecute;
 import br.ufjf.ice.dcc.mineracaolocal.cli.CLIExecution;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,7 +29,34 @@ public class Git {
             if (execution.getError() != null && !execution.getError().isEmpty()) {
                 return null;
             } else {
+                Collections.reverse(execution.getOutput());
                 return execution.getOutput();
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(Mineracao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+    
+    public static List<CommitData> listVersionsCommitData(String repositoryPath) {
+
+        try {
+            CLIExecution execution = CLIExecute.execute("git log --all --pretty=\"%H-%cn\"", repositoryPath);
+
+            if (execution.getError() != null && !execution.getError().isEmpty()) {
+                return null;
+            } else {
+                Collections.reverse(execution.getOutput());
+                List<CommitData> result = new ArrayList<>();
+                
+                for (String line : execution.getOutput()) {
+                    String[] split = line.split("-");
+                    
+                    result.add(new CommitData(split[0].trim().replaceFirst("\"", ""), split[1].trim().replace("\"", "")));
+                }
+                return result;
             }
 
         } catch (IOException ex) {
@@ -177,26 +205,5 @@ public class Git {
         return null;
     }
 
-    public static void main(String[] args) {
-        String path = "/Users/gleiph/repositories/cobaia";
-        String sha1 = "302f11028106bdc0535da127d2b49cda61f9eda5";
-        String sha2 = "e860773eb86f1ffdb0ddbcc311458eadcb0c167f";
-
-        int added = 0, removed = 0;
-
-        List<String> lines = diff(path, sha1, sha2);
-
-        for (String line : lines) {
-            
-            if(line.startsWith("+") && !line.startsWith("++"))
-                added++;
-            else if(line.startsWith("-") && !line.startsWith("--"))
-                removed++;
-            System.out.println(line);
-        }
-
-        System.out.println("removed = " + removed);
-        System.out.println("added = " + added);
-    }
 
 }
