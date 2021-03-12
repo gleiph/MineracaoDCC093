@@ -31,7 +31,7 @@ public class Mineracao {
         try {
             List<CommitData> listVersionsCommitData = Git.listVersionsCommitData(projectPath);
             HideCommiterName hideCommiterName = new HideCommiterName();
-            System.out.println("Commiter, SHA, Packages, Classes, Methods");
+            System.out.println("Commiter, SHA, Packages, Classes, Methods, TLOC");
             for (CommitData commitData : listVersionsCommitData) {
 
                 Git.reset(projectPath);
