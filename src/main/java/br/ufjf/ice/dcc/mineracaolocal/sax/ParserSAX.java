@@ -108,12 +108,4 @@ public class ParserSAX extends DefaultHandler {
         }
     }
     
-    public static void main(String[] args) {
-        ParserSAX parser = new ParserSAX();
-        String xmlPath = "/Users/gleiph/Google Drive/UFJF/2020.3/DCC093/repositorios.xml";
-        parser.fazerParsing(xmlPath);
-        parser.imprimeRepositorios();
-        
-    }
-
 }

@@ -25,8 +25,8 @@ public class Mineracao {
 
     public static void main(String[] args) {
 
-        String jasomePath = "/Users/gleiph/repositories/jasome/build/distributions/jasome/bin/jasome";
-        String projectPath = "/Users/gleiph/repositories/cobaia";
+        String jasomePath = "C:\\Users\\gleip\\Documents\\jasome\\build\\distributions\\jasome\\jasome\\bin\\jasome.bat";
+        String projectPath = "C:\\Users\\gleip\\Documents\\ufjf";
 
         try {
             List<CommitData> listVersionsCommitData = Git.listVersionsCommitData(projectPath);

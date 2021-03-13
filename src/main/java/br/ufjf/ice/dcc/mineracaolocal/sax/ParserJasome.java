@@ -196,13 +196,4 @@ public class ParserJasome extends DefaultHandler {
         return project;
     }
 
-    public static void main(String[] args) {
-        ParserJasome parser = new ParserJasome();
-        String xmlPath = "/Users/gleiph/Google Drive/UFJF/2020.3/DCC093/project.xml";
-        parser.pathParsing(xmlPath);
-
-        parser.getProject().print();
-
-    }
-
 }
